@@ -69,11 +69,8 @@ def _circular_fft_convnd(
     if len(weight_s) > 1:
         W = fftn(W, s=weight_s[:-1], dim=tuple(range(2, W.ndim - 1)))
         repeats = (1, 1) + dilation[:-1] + (1,)
-        # W.imag.mul_(-1)
         if sum(repeats) > W.ndim:
             W = W.repeat(*repeats)
-    # else:
-    # W.imag.mul_(-1)
 
     Y = _complex_matmul(X, W, groups)
 
