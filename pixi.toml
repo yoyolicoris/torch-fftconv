@@ -12,6 +12,7 @@ pytorch-gpu = ">=1.8.0,<3"
 cuda = { version = ">=13.0,<14", channel = "nvidia" }
 
 [pypi-dependencies]
+torch_fftconv = { path = ".", editable = true }
 pytest = ">=9.0.3, <10"
 pytest-cov = ">=7.1.0, <8"
 
