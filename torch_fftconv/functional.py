@@ -116,35 +116,33 @@ def _fft_convnd(
 
     if complex_input:
         X = fftn(padded_input, s=s)
-        W = fft(weight, n=weight_s[-1])
+        W = fftn(weight.conj(), s=weight_s)
+        repeats = (1, 1) + dilation
+        if sum(repeats) > W.ndim:
+            W = W.repeat(*repeats)
     else:
         X = rfftn(padded_input, s=s)
         W = rfft(weight, n=weight_s[-1])
-    # handle dilation
-    # handle dilation for last dim
-    if dilation[-1] > 1 and not complex_input:
-        W_neg_freq = W.flip(-1)[..., 1:]
-        W_neg_freq.imag.mul_(-1)
+        # handle dilation
+        # handle dilation for last dim
+        if dilation[-1] > 1:
+            W_neg_freq = W.flip(-1)[..., 1:]
+            W_neg_freq.imag.mul_(-1)
 
-        tmp = [W]
-        for i in range(1, dilation[-1]):
-            if i % 2:
-                tmp.append(W_neg_freq)
-            else:
-                tmp.append(W[..., 1:])
+            tmp = [W]
+            for i in range(1, dilation[-1]):
+                if i % 2:
+                    tmp.append(W_neg_freq)
+                else:
+                    tmp.append(W[..., 1:])
 
-        W = torch.cat(tmp, -1)
-    elif dilation[-1] > 1:
-        W = W.repeat(*(1,) * (W.ndim - 1), dilation[-1])
+            W = torch.cat(tmp, -1)
 
-    if len(weight_s) > 1:
-        W = fftn(W, s=weight_s[:-1], dim=tuple(range(2, W.ndim - 1)))
-        repeats = (1, 1) + dilation[:-1] + (1,)
-        # W.imag.mul_(-1)
-        if sum(repeats) > W.ndim:
-            W = W.repeat(*repeats)
-    # else:
-    # W.imag.mul_(-1)
+        if len(weight_s) > 1:
+            W = fftn(W, s=weight_s[:-1], dim=tuple(range(2, W.ndim - 1)))
+            repeats = (1, 1) + dilation[:-1] + (1,)
+            if sum(repeats) > W.ndim:
+                W = W.repeat(*repeats)
 
     Y = _complex_matmul(X, W, groups)
 
@@ -152,7 +150,6 @@ def _fft_convnd(
     if len(stride) > 1:
         for i, st in enumerate(stride[:-1]):
             if st > 1:
-                # Y = Y.reshape(*Y.shape[: i + 2], st, -1, *Y.shape[i + 3 :]).mean(i + 2)
                 Y = Y.unflatten(i + 2, (st, -1)).mean(i + 2)
 
             Y = ifft(Y, dim=i + 2)
@@ -213,6 +210,7 @@ def _fft_conv_transposend(
         input.shape[2:], weight.shape[2:], stride, padding, output_padding, dilation
     )
     padded_output_size = tuple(o + 2 * p for o, p in zip(output_size, padding))
+    complex_input = input.is_complex()
 
     s: list[int] = []
     weight_s: list[int] = []
@@ -222,7 +220,7 @@ def _fft_conv_transposend(
         s_size = max(x_size, w_size * d)
 
         # find s size that can be divided by stride and dilation
-        rfft_even = 2 if i == len(stride) - 1 else 1
+        rfft_even = 2 if (i == len(stride) - 1 and complex_input) else 1
         factor = _lcm(st * rfft_even, d * rfft_even)
 
         offset = s_size % factor
@@ -231,49 +229,62 @@ def _fft_conv_transposend(
         s.append(s_size // st)
         weight_s.append(s_size // d)
 
-    X = rfft(input, n=s[-1])
-    W = rfft(weight, n=weight_s[-1])
-
-    if stride[-1] > 1:
-        X_neg_freq = X.flip(-1)[..., 1:]
-        X_neg_freq.imag.mul_(-1)
-
-        tmp = [X]
-        for i in range(1, stride[-1]):
-            if i % 2:
-                tmp.append(X_neg_freq)
-            else:
-                tmp.append(X[..., 1:])
-
-        X = torch.cat(tmp, -1)
-
-    if dilation[-1] > 1:
-        W_neg_freq = W.flip(-1)[..., 1:]
-        W_neg_freq.imag.mul_(-1)
-
-        tmp = [W]
-        for i in range(1, dilation[-1]):
-            if i % 2:
-                tmp.append(W_neg_freq)
-            else:
-                tmp.append(W[..., 1:])
-
-        W = torch.cat(tmp, -1)
-
-    if len(s) > 1:
-        X = fftn(X, s=s[:-1], dim=tuple(range(2, X.ndim - 1)))
-        W = fftn(W, s=weight_s[:-1], dim=tuple(range(2, W.ndim - 1)))
-        repeats = (1, 1) + stride[:-1] + (1,)
+    if complex_input:
+        X = fftn(input, s=s)
+        W = fftn(weight, s=weight_s)
+        repeats = (1, 1) + stride
         if sum(repeats) > X.ndim:
             X = X.repeat(*repeats)
-
-        repeats = (1, 1) + dilation[:-1] + (1,)
+        repeats = (1, 1) + dilation
         if sum(repeats) > W.ndim:
             W = W.repeat(*repeats)
+    else:
+        X = rfft(input, n=s[-1])
+        W = rfft(weight, n=weight_s[-1])
+
+        if stride[-1] > 1:
+            X_neg_freq = X.flip(-1)[..., 1:]
+            X_neg_freq.imag.mul_(-1)
+
+            tmp = [X]
+            for i in range(1, stride[-1]):
+                if i % 2:
+                    tmp.append(X_neg_freq)
+                else:
+                    tmp.append(X[..., 1:])
+
+            X = torch.cat(tmp, -1)
+
+        if dilation[-1] > 1:
+            W_neg_freq = W.flip(-1)[..., 1:]
+            W_neg_freq.imag.mul_(-1)
+
+            tmp = [W]
+            for i in range(1, dilation[-1]):
+                if i % 2:
+                    tmp.append(W_neg_freq)
+                else:
+                    tmp.append(W[..., 1:])
+
+            W = torch.cat(tmp, -1)
+
+        if len(s) > 1:
+            X = fftn(X, s=s[:-1], dim=tuple(range(2, X.ndim - 1)))
+            W = fftn(W, s=weight_s[:-1], dim=tuple(range(2, W.ndim - 1)))
+            repeats = (1, 1) + stride[:-1] + (1,)
+            if sum(repeats) > X.ndim:
+                X = X.repeat(*repeats)
+
+            repeats = (1, 1) + dilation[:-1] + (1,)
+            if sum(repeats) > W.ndim:
+                W = W.repeat(*repeats)
 
     Y = _complex_matmul(X, W, groups, True)
 
-    output = irfftn(Y, dim=tuple(range(2, Y.ndim)))
+    if complex_input:
+        output = ifftn(Y, dim=tuple(range(2, Y.ndim)))
+    else:
+        output = irfftn(Y, dim=tuple(range(2, Y.ndim)))
 
     # Remove extra padded values
     index = (slice(None),) * 2 + tuple(
