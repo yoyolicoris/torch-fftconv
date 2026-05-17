@@ -390,8 +390,8 @@ def test_conv_transpose2d(
 
 
 @pytest.mark.parametrize("batch", [2])
-@pytest.mark.parametrize("in_channels", [8])
-@pytest.mark.parametrize("out_channels", [8])
+@pytest.mark.parametrize("in_channels", [4])
+@pytest.mark.parametrize("out_channels", [6])
 @pytest.mark.parametrize("length", [(29, 23, 23)])
 @pytest.mark.parametrize("kernel_size", [9, 11])
 @pytest.mark.parametrize("padding", [6])
