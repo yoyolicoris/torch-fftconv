@@ -2,7 +2,7 @@ import torch
 from torch import Tensor
 from torch.nn.modules.utils import _single, _pair, _triple, _reverse_repeat_tuple
 import torch.nn.functional as F
-from torch.fft import rfft, fftn, rfftn, ifft, irfft, ifftn, irfftn, fft
+from torch.fft import rfft, fftn, rfftn, ifft, irfft, ifftn, irfftn
 
 from typing import Optional, Union
 from math import gcd

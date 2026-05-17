@@ -10,7 +10,7 @@ matplotlib = ">=3.10.9,<4"
 
 [target.linux-64.dependencies]
 cuda-version = ">=13.0,<14"
-pytorch-gpu = ">=1.8.0,<3"
+pytorch-gpu = ">=2.0,<3"
 cuda = { version = ">=13.0,<14", channel = "nvidia" }
 
 [pypi-dependencies]
@@ -23,4 +23,4 @@ build = ">=1.5.0, <2"
 cuda = "13.0"
 
 [target.osx-arm64.dependencies]
-pytorch-cpu = ">=1.8.0,<3"
+pytorch-cpu = ">=2.0,<3"

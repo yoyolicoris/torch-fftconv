@@ -26,12 +26,11 @@ bias = torch.randn(2)
 # Functional execution.  (Easiest for generic use cases.)
 out = fft_conv1d(signal, kernel, bias=bias)
 
-# Object-oriented execution.  (Requires some extra work, since the 
-# defined classes were designed for use in neural networks.)
+# Object-oriented execution.
 fft_conv = FFTConv1d(3, 2, 128, bias=True)
-out = fft_conv1d(signal)
+out = fft_conv(signal)
 
-# Supposedly you want to replace an existing convolution layer in a neural network with FFTConv, you can do it like this:
+# Suppose you want to replace all the existing convolution layers in a neural network with FFTConv, you can do it like this:
 m: torch.nn.Module = ...  # some existing model
 from torch_fftconv.utils import convert_fft_conv
 m = convert_fft_conv(m)  # this will replace all Conv/TransposedConv layers in m with FFTConv layers, and copy the weights and bias.
