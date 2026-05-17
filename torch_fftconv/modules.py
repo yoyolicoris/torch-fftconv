@@ -254,8 +254,6 @@ class FFTConvTranspose1d(nn.ConvTranspose1d):
                 "Only `zeros` padding mode is supported for FFTConvTranspose1d"
             )
 
-        # One cannot replace list by tuple or Sequence in "_output_padding" because
-        # TorchScript does not support `Sequence[T]` or `tuple[T, ...]`.
         output_padding = self._output_padding(
             input,
             output_size,
@@ -283,8 +281,6 @@ class FFTConvTranspose2d(nn.ConvTranspose2d):
                 "Only `zeros` padding mode is supported for FFTConvTranspose2d"
             )
 
-        # One cannot replace list by tuple or Sequence in "_output_padding" because
-        # TorchScript does not support `Sequence[T]` or `tuple[T, ...]`.
         output_padding = self._output_padding(
             input,
             output_size,
@@ -312,8 +308,6 @@ class FFTConvTranspose3d(nn.ConvTranspose3d):
                 "Only `zeros` padding mode is supported for FFTConvTranspose3d"
             )
 
-        # One cannot replace list by tuple or Sequence in "_output_padding" because
-        # TorchScript does not support `Sequence[T]` or `tuple[T, ...]`.
         output_padding = self._output_padding(
             input,
             output_size,
