@@ -105,7 +105,7 @@ def test_cmplx_conv2d(
         *length,
         requires_grad=True,
         device=device,
-        dtype=torch.complex64
+        dtype=torch.complex64,
     )
     weight = (
         torch.randn(
@@ -158,7 +158,7 @@ def test_cmplx_conv3d(
         *length,
         requires_grad=True,
         device=device,
-        dtype=torch.complex64
+        dtype=torch.complex64,
     )
     weight = (
         torch.randn(
@@ -276,7 +276,7 @@ def test_cmplx_conv_transpose2d(
         *length,
         requires_grad=True,
         device=device,
-        dtype=torch.complex64
+        dtype=torch.complex64,
     )
     weight = (
         torch.randn(
@@ -351,7 +351,7 @@ def test_cmplx_conv_transpose3d(
         *length,
         requires_grad=True,
         device=device,
-        dtype=torch.complex64
+        dtype=torch.complex64,
     )
     weight = (
         torch.randn(
