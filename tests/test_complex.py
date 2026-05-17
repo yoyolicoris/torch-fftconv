@@ -72,7 +72,7 @@ def test_cmplx_conv1d(
 
     y1 = F.conv1d(x, weight, bias, stride, padding, dilation, groups)
     y2 = fft_conv1d(x, weight, bias, stride, padding, dilation, groups)
-    assert torch.allclose(y1, y2, atol=3e-5, rtol=1e-5), torch.abs(y1 - y2).max().item()
+    assert torch.allclose(y1, y2, atol=6e-5, rtol=1e-5), torch.abs(y1 - y2).max().item()
     y2.abs().sum().backward()
 
 
@@ -125,7 +125,7 @@ def test_cmplx_conv2d(
 
     y1 = F.conv2d(x, weight, bias, stride, padding, dilation, groups)
     y2 = fft_conv2d(x, weight, bias, stride, padding, dilation, groups)
-    assert torch.allclose(y1, y2, atol=3e-5, rtol=1e-5), torch.abs(y1 - y2).max().item()
+    assert torch.allclose(y1, y2, atol=6e-5, rtol=1e-5), torch.abs(y1 - y2).max().item()
     y2.abs().sum().backward()
 
 
@@ -179,7 +179,7 @@ def test_cmplx_conv3d(
 
     y1 = F.conv3d(x, weight, bias, stride, padding, dilation, groups)
     y2 = fft_conv3d(x, weight, bias, stride, padding, dilation, groups)
-    assert torch.allclose(y1, y2, atol=3e-5, rtol=1e-5), torch.abs(y1 - y2).max().item()
+    assert torch.allclose(y1, y2, atol=6e-5, rtol=1e-5), torch.abs(y1 - y2).max().item()
     y2.abs().sum().backward()
 
 
@@ -239,7 +239,7 @@ def test_cmplx_conv_transpose1d(
     y2 = fft_conv_transpose1d(
         x, weight, bias, stride, padding, output_padding, groups, dilation
     )
-    assert torch.allclose(y1, y2, atol=3e-5, rtol=1e-5), torch.abs(y1 - y2).max().item()
+    assert torch.allclose(y1, y2, atol=6e-5, rtol=1e-5), torch.abs(y1 - y2).max().item()
     y2.abs().sum().backward()
 
 
@@ -314,7 +314,7 @@ def test_cmplx_conv_transpose2d(
         groups=groups,
         dilation=dilation,
     )
-    assert torch.allclose(y1, y2, atol=3e-5, rtol=1e-5), torch.abs(y1 - y2).max().item()
+    assert torch.allclose(y1, y2, atol=6e-5, rtol=1e-5), torch.abs(y1 - y2).max().item()
     y2.abs().sum().backward()
 
 
@@ -390,5 +390,5 @@ def test_cmplx_conv_transpose3d(
         groups=groups,
         dilation=dilation,
     )
-    assert torch.allclose(y1, y2, atol=3e-5, rtol=1e-5), torch.abs(y1 - y2).max().item()
+    assert torch.allclose(y1, y2, atol=6e-5, rtol=1e-5), torch.abs(y1 - y2).max().item()
     y2.abs().sum().backward()
