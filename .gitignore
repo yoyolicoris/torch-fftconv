@@ -8,3 +8,8 @@ coverage.xml
 # pixi environments
 .pixi/*
 !.pixi/config.toml
+
+# distribution files
+dist
+build
+*.egg-info
