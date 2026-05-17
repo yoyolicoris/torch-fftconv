@@ -220,7 +220,7 @@ def _fft_conv_transposend(
         s_size = max(x_size, w_size * d)
 
         # find s size that can be divided by stride and dilation
-        rfft_even = 2 if (i == len(stride) - 1 and complex_input) else 1
+        rfft_even = 2 if (i == len(stride) - 1 and not complex_input) else 1
         factor = _lcm(st * rfft_even, d * rfft_even)
 
         offset = s_size % factor
