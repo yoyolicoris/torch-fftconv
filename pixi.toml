@@ -1,0 +1,26 @@
+[workspace]
+authors = ["Chin-Yun Yu <chin-yun.yu@qmul.ac.uk>"]
+channels = ["https://prefix.dev/conda-forge", "nvidia"]
+name = "torch-fftconv"
+platforms = ["linux-64", "osx-arm64"]
+
+[dependencies]
+jupyter = ">=1.1.1,<2"
+matplotlib = ">=3.10.9,<4"
+
+[target.linux-64.dependencies]
+cuda-version = ">=13.0,<14"
+pytorch-gpu = ">=2.0,<3"
+cuda = { version = ">=13.0,<14", channel = "nvidia" }
+
+[pypi-dependencies]
+torch-fftconv = { path = ".", editable = true }
+pytest = ">=9.0.3, <10"
+pytest-cov = ">=7.1.0, <8"
+build = ">=1.5.0, <2"
+
+[system-requirements]
+cuda = "13.0"
+
+[target.osx-arm64.dependencies]
+pytorch-cpu = ">=2.0,<3"
