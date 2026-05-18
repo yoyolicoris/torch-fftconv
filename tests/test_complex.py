@@ -225,7 +225,7 @@ def test_cmplx_conv_transpose1d(
             device=device,
             dtype=torch.complex64,
         )
-        / (kernel_size * kernel_size * in_channels // groups) ** 0.5
+        / (kernel_size * in_channels // groups) ** 0.5
     )
     if bias:
         bias = torch.randn(out_channels, device=device, dtype=torch.complex64)
@@ -360,7 +360,7 @@ def test_cmplx_conv_transpose3d(
             device=device,
             dtype=torch.complex64,
         )
-        / (kernel_size * kernel_size * in_channels // groups) ** 0.5
+        / (kernel_size * kernel_size * kernel_size * in_channels // groups) ** 0.5
     )
     if bias:
         bias = torch.randn(out_channels, device=device, dtype=torch.complex64)
