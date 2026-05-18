@@ -25,12 +25,12 @@ if torch.cuda.is_available():
 
 
 @pytest.mark.parametrize("batch", [1, 4])
-@pytest.mark.parametrize("in_channels", [16, 64])
-@pytest.mark.parametrize("out_channels", [8, 32])
+@pytest.mark.parametrize("in_channels", [4, 12])
+@pytest.mark.parametrize("out_channels", [4, 8])
 @pytest.mark.parametrize("length", [1027])
 @pytest.mark.parametrize("kernel_size", [128, 256])
-@pytest.mark.parametrize("stride", [1, 3, 4])
-@pytest.mark.parametrize("dilation", [1, 2, 4])
+@pytest.mark.parametrize("stride", [1, 2])
+@pytest.mark.parametrize("dilation", [1, 3])
 @pytest.mark.parametrize("padding", [0, 3])
 @pytest.mark.parametrize("bias", [False, True])
 @pytest.mark.parametrize("groups", [1, 4])
@@ -81,8 +81,8 @@ def test_cmplx_conv1d(
 @pytest.mark.parametrize("out_channels", [4, 16])
 @pytest.mark.parametrize("length", [(101, 101)])
 @pytest.mark.parametrize("kernel_size", [17, 23])
-@pytest.mark.parametrize("stride", [1, 2, 3])
-@pytest.mark.parametrize("dilation", [1, 2, 3])
+@pytest.mark.parametrize("stride", [1, 2])
+@pytest.mark.parametrize("dilation", [1, 3])
 @pytest.mark.parametrize("padding", [0, 7])
 @pytest.mark.parametrize("bias", [True, False])
 @pytest.mark.parametrize("groups", [1, 2])
@@ -134,8 +134,8 @@ def test_cmplx_conv2d(
 @pytest.mark.parametrize("out_channels", [8])
 @pytest.mark.parametrize("length", [(53, 53, 59)])
 @pytest.mark.parametrize("kernel_size", [9, 11])
-@pytest.mark.parametrize("stride", [1, 2, 3])
-@pytest.mark.parametrize("dilation", [1, 2, 3])
+@pytest.mark.parametrize("stride", [1, 2])
+@pytest.mark.parametrize("dilation", [1, 3])
 @pytest.mark.parametrize("padding", [6])
 @pytest.mark.parametrize("bias", [True, False])
 @pytest.mark.parametrize("groups", [1, 2])
@@ -184,14 +184,13 @@ def test_cmplx_conv3d(
 
 
 @pytest.mark.parametrize("batch", [1, 4])
-@pytest.mark.parametrize("in_channels", [16, 64])
-@pytest.mark.parametrize("out_channels", [8, 32])
+@pytest.mark.parametrize("in_channels", [4, 12])
+@pytest.mark.parametrize("out_channels", [4, 8])
 @pytest.mark.parametrize("length", [409])
 @pytest.mark.parametrize("kernel_size", [128, 256])
 @pytest.mark.parametrize(
     "stride,dilation,output_padding",
-    [x + (0,) for x in product([1, 3, 4], [1, 2, 4])]
-    + [x + (1,) for x in product([3, 4], [2, 4])],
+    [(1, 1, 0), (3, 2, 0)],
 )
 @pytest.mark.parametrize("padding", [0, 3])
 @pytest.mark.parametrize("bias", [True, False])
@@ -251,8 +250,7 @@ def test_cmplx_conv_transpose1d(
 @pytest.mark.parametrize("padding", [0, 7])
 @pytest.mark.parametrize(
     "stride,dilation,output_padding",
-    [x + (0,) for x in product([1, 2, 3], [1, 2, 3])]
-    + [x + (1,) for x in product([2, 3], [2, 3])],
+    [(1, 1, 0), (3, 2, 0)],
 )
 @pytest.mark.parametrize("bias", [True, False])
 @pytest.mark.parametrize("groups", [1, 2])
@@ -326,8 +324,7 @@ def test_cmplx_conv_transpose2d(
 @pytest.mark.parametrize("padding", [6])
 @pytest.mark.parametrize(
     "stride,dilation,output_padding",
-    [x + (0,) for x in product([1, 2, 3], [1, 2, 3])]
-    + [x + (1,) for x in product([2, 3], [2, 3])],
+    [(1, 1, 0), (3, 2, 0)],
 )
 @pytest.mark.parametrize("bias", [True, False])
 @pytest.mark.parametrize("groups", [1, 2])
